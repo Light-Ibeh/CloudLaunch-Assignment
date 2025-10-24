@@ -1,54 +1,78 @@
-# AWS CLI v2
+Project Title: CloudLaunch Deployment — AWS Cloud Engineering Assignment
 
-This bundle contains a built executable of the AWS CLI v2.
+Description
 
-## Installation
-
-To install the AWS CLI v2, run the `install` script:
-```
-$ sudo ./install 
-You can now run: /usr/local/bin/aws --version
-```
-This will install the AWS CLI v2 at `/usr/local/bin/aws`.  Assuming
-`/usr/local/bin` is on your `PATH`, you can now run:
-```
-$ aws --version
-```
+This project showcases a step-by-step deployment of a simple cloud infrastructure using AWS services — S3, EC2, IAM, VPC, Nginx, and MongoDB. It was built as part of AltSchool Africa’s Cloud Engineering Diploma program.
 
 
-### Installing without sudo
 
-If you don't have ``sudo`` permissions or want to install the AWS
-CLI v2 only for the current user, run the `install` script with the `-b`
-and `-i` options:
-```
-$ ./install -i ~/.local/aws-cli -b ~/.local/bin
-``` 
-This will install the AWS CLI v2 in `~/.local/aws-cli` and create
-symlinks for `aws` and `aws_completer` in `~/.local/bin`. For more
-information about these options, run the `install` script with `-h`:
-```
-$ ./install -h
-```
+Architecture Overview
 
-### Updating
+Frontend (Static Website): Hosted on S3 bucket with public read policy.
 
-If you run the `install` script and there is a previously installed version
-of the AWS CLI v2, the script will error out. To update to the version included
-in this bundle, run the `install` script with `--update`:
-```
-$ sudo ./install --update
-```
+Backend (Application Layer): Ubuntu EC2 instance running Nginx.
+
+Database Layer: MongoDB service installed on same EC2 instance.
+
+IAM Role: EC2 assumes CloudLaunchEC2Role for S3 read-only access.
+
+Networking: Custom VPC with subnets, route table, and internet gateway.
 
 
-### Removing the installation
 
-To remove the AWS CLI v2, delete the its installation and symlinks:
-```
-$ sudo rm -rf /usr/local/aws-cli
-$ sudo rm /usr/local/bin/aws
-$ sudo rm /usr/local/bin/aws_completer
-```
-Note if you installed the AWS CLI v2 using the `-b` or `-i` options, you will
-need to remove the installation and the symlinks in the directories you
-specified.
+
+Tools & Technologies
+
+AWS Services: S3, EC2, IAM, VPC
+
+Software: Ubuntu 24.04 (Noble), Nginx, MongoDB 7.0
+
+Access Tools: AWS CLI, Termius SSH, Git, Visual Studio Code
+
+Region: eu-west-1 (Ireland)
+
+
+
+
+Commands Summary
+
+# Create S3 Buckets
+aws s3 mb s3://cloudlaunch-site-bucket-altschooluser1 --region eu-west-1
+aws s3 mb s3://cloudlaunch-private-bucket-altschooluser1 --region eu-west-1
+aws s3 mb s3://cloudlaunch-visible-only-bucket-altschooluser1 --region eu-west-1
+
+# Upload HTML File
+aws s3 cp index.html s3://cloudlaunch-site-bucket-altschooluser1/
+
+# Check Buckets
+aws s3 ls
+
+# Install Nginx & MongoDB
+sudo apt update -y && sudo apt install nginx -y
+sudo apt install -y mongodb-org
+sudo systemctl start mongod && sudo systemctl enable mongod
+
+# Verify Role and CLI
+curl http://169.254.169.254/latest/meta-data/iam/security-credentials/
+aws s3 ls
+
+Outputs (Verification Screenshots)
+
+✅ S3 buckets listed in AWS Console.
+
+✅ HTML file accessible via public URL.
+
+✅ EC2 instance running in VPC with IAM role.
+
+✅ Nginx welcome page live.
+
+✅ MongoDB running and verified.
+
+✅ AWS CLI lists S3 buckets using instance credentials.
+
+
+
+Author
+
+Light Ibeh
+Cloud Engineering Student at AltSchool Africa
